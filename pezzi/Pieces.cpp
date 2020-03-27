@@ -47,9 +47,9 @@ class Queen : public Piece {
 
 class King : public Piece {
     public:
-        Pawn (int r, int c, int i) : Piece (r, c, i, 0) { }
-        bool can_move(int r, int c) { 
+        King (int r, int c, int i) : Piece (r, c, i, 0) { }
+        bool can_move(int r, int c) {
             //TODO
-            return true; 
+            return true;
         }
 };
