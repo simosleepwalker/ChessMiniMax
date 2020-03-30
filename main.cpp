@@ -1,7 +1,5 @@
-#include <iostream>
-#include "pezzi/Pieces.cpp"
-using namespace std;
+#include "Chess.h"
 
 int main () {
-    Pawn pawn(0,0,0);
+    Chess* foo1 = new Chess ();
 }
