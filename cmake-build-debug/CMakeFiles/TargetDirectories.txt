@@ -1,0 +1,3 @@
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/cmake-build-debug/CMakeFiles/Progetto.dir

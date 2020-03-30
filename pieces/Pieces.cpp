@@ -1,10 +1,12 @@
 #include "Pieces.h"
+#include <iostream>
 
 Pawn::Pawn (int r, int c, int i, char x) : Piece (r, c, i, 0, x) { }
-bool Pawn::can_move (int r, int c, Piece* p) {
-    /*if ((r <= 8 && c <= 8 && r >= 1 && c >= 1) && 
-        ((get_color() == 'W' && ((get_row() == 2 && (r - get_row() <= 2 && r - get_row() > 0)) || ( get_row() != 2 && r - get_row() == 1 ) || ( r - get_row() == 1 && abs(c - get_col()) == 1 && p[(r*8+c)] != nullptr ) ) ) || 
-         (get_color() == 'B' && ((get_row() == 7 && (r - get_row() >= -2 && r - get_row() < 0)) || ( get_row() != 2 && r - get_row() == -1) || ( r - get_row() == -1 && abs(c - get_col()) == 1 && p[(r*8+c)] != nullptr ) ) ) || ) ) { return true; }*/
+bool Pawn::can_move (int r, int c, Piece** p) {
+    Piece* piece_to_eat = p[(r-1)*8+(c-1)];
+    if ((r <= 8 && c <= 8 && r >= 1 && c >= 1) && 
+        ((get_color() == 'W' && ((get_row() == 2 && (r - get_row() <= 2 && r - get_row() > 0)) || ( get_row() != 2 && r - get_row() == 1 ) || ( r - get_row() == 1 && abs(c - get_col()) == 1 && piece_to_eat != nullptr ) ) ) || 
+         (get_color() == 'B' && ((get_row() == 7 && (r - get_row() >= -2 && r - get_row() < 0)) || ( get_row() != 2 && r - get_row() == -1) || ( r - get_row() == -1 && abs(c - get_col()) == 1 && piece_to_eat != nullptr ) ) ) ) ) { return true; }
     return false;
 }
 string Pawn::type() { return "Pawn"; }

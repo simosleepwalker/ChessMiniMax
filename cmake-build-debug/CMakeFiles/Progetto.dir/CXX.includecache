@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/Chess.cpp
+Chess.h
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/Chess.h
+iostream
+-
+
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/Chess.h
+pieces/Pieces.h
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Pieces.h
+
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Piece.cpp
+Piece.h
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Piece.h
+iostream
+-
+
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Piece.h
+string
+-
+
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Pieces.h
+Piece.h
+/Users/simone/Documents/Università/Advanced Computer Programming/Progetto/pieces/Piece.h
+

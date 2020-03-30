@@ -13,5 +13,5 @@ public:
     char get_color ();
     virtual string type ();
     virtual bool can_move (int r, int c);
-    virtual bool can_move (int r, int c, Piece* p);  
+    virtual bool can_move (int r, int c, Piece** p);  
 };
