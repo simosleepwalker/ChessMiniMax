@@ -4,3 +4,5 @@ Chess
 CPP
 pieces/*.pyc
 *.pyc
+.DS_Store
+__pycache__
