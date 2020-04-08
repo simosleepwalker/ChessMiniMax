@@ -34,6 +34,7 @@ class Cell (tk.Frame):
         if (self.chess.get_turn() == self.get_piece().get_color()):
             moves = self.get_piece().get_moves(self.chess,self.chess.get_king(self.chess.get_turn()))
             self.board.highlit_moves(moves,self.get_piece())
+                
 
     def set_moves_callback (self, event):
         self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
@@ -103,6 +104,11 @@ class Board (tk.Frame):
                 label.pack()
     
     def highlit_moves (self,moves,piece):
+        if len(moves) > 0:
+            for cell in self.cells:
+                cell.unbind("<Button-1>")
+                for child in cell.winfo_children():
+                    child.unbind("<Button-1>")
         for move in moves:
             self.cells[utils.get_index(move[0],move[1])]['bg'] = COLOR3
             for child in self.cells[utils.get_index(move[0],move[1])].winfo_children():
