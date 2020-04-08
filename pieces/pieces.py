@@ -1,11 +1,6 @@
-class Piece:
+import copy
 
-    def __init__ (self,row,col,id,val,color):
-        self.row = row
-        self.col = col
-        self.id = id
-        self.val = val
-        self.color = color
+class Piece:
         
     def move (self,nrow,ncol):
         self.row = nrow
@@ -26,15 +21,30 @@ class Piece:
 
     def get_image_path (self):
         return self.image
+
+    def get_moves_path (self,row_func,col_func,board):
+        moves = []
+        for i in range(1,9):
+            if (self.can_move(row_func(self.row,i),col_func(self.col,i))):
+                if (board.get_piece(row_func(self.row,i),col_func(self.col,i)) == None):
+                    moves.append((row_func(self.row,i),col_func(self.col,i)))
+                elif (board.get_piece(row_func(self.row,i),col_func(self.col,i)) != None and board.get_piece(row_func(self.row,i),col_func(self.col,i)).get_color() != self.get_color()):
+                    moves.append((row_func(self.row,i),col_func(self.col,i)))
+                    break
+                else:
+                    break
+            else:
+                break
+        return moves
+
+    def __init__ (self,row,col,id,val,color):
+        self.row = row
+        self.col = col
+        self.id = id
+        self.val = val
+        self.color = color
     
 class Pawn (Piece):
-    
-    def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
-        if (self.color == 'b'):
-            self.image = 'img/blackp.png'
-        else:
-            self.image = 'img/whitep.png'
     
     def type (self): 
         return 'pawn'
@@ -51,37 +61,44 @@ class Pawn (Piece):
                 return True
         return False
 
-    def get_moves (self,board):
+    def get_moves (self,board,king = None):
+        temp_moves = []
         moves = []
         if (self.color == 'w'):
             if (self.can_move(self.get_row()+1,self.get_col(),board)):
-                moves.append((self.get_row()+1,self.get_col()))
+                temp_moves.append((self.get_row()+1,self.get_col()))
             if (self.can_move(self.get_row()+2,self.get_col(),board)):
-                moves.append((self.get_row()+2,self.get_col()))
+                temp_moves.append((self.get_row()+2,self.get_col()))
             if (self.can_move(self.get_row()+1,self.get_col()+1,board)):
-                moves.append((self.get_row()+1,self.get_col()+1))
+                temp_moves.append((self.get_row()+1,self.get_col()+1))
             if (self.can_move(self.get_row()+1,self.get_col()-1,board)):
-                moves.append((self.get_row()+1,self.get_col()-1))
+                temp_moves.append((self.get_row()+1,self.get_col()-1))
         else:
             if (self.can_move(self.get_row()-1,self.get_col(),board)):
-                moves.append((self.get_row()-1,self.get_col()))
+                temp_moves.append((self.get_row()-1,self.get_col()))
             if (self.can_move(self.get_row()-2,self.get_col(),board)):
-                moves.append((self.get_row()-2,self.get_col()))
+                temp_moves.append((self.get_row()-2,self.get_col()))
             if (self.can_move(self.get_row()-1,self.get_col()+1,board)):
-                moves.append((self.get_row()-1,self.get_col()+1))
+                temp_moves.append((self.get_row()-1,self.get_col()+1))
             if (self.can_move(self.get_row()-1,self.get_col()-1,board)):
-                moves.append((self.get_row()-1,self.get_col()-1))
-        print(moves)
-        return moves
+                temp_moves.append((self.get_row()-1,self.get_col()-1))
+        if king != None:
+            for move in temp_moves:
+                temp_board = copy.deepcopy(board)
+                temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+                if (not(king.is_in_check(temp_board))):
+                    moves.append(move)
+            return moves
+        return temp_moves
 
-class Knight (Piece):
-    
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)
         if (self.color == 'b'):
-            self.image = "img/blackn.png"
+            self.image = 'img/blackp.png'
         else:
-            self.image = "img/whiten.png"
+            self.image = 'img/whitep.png'
+
+class Knight (Piece):
     
     def type (self): 
         return 'knight'
@@ -90,18 +107,46 @@ class Knight (Piece):
         return 'n'
 
     def can_move (self,nrow,ncol,board):
-        if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and (((abs(self.get_row() - nrow) == 2) and (abs(self.get_col() - ncol) == 1)) or ((abs(self.get_col() - ncol) == 2) and (abs(self.get_row() - nrow) == 1)))):
+        if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and (((abs(self.get_row() - nrow) == 2 and abs(self.get_col() - ncol) == 1 and (board.get_piece(nrow,ncol) == None or board.get_piece(nrow,ncol).get_color() != self.get_color())) or (abs(self.get_col() - ncol) == 2 and abs(self.get_row() - nrow) == 1 and (board.get_piece(nrow,ncol) == None or board.get_piece(nrow,ncol).get_color() != self.get_color())))) ):
             return True
         return False
 
-class Bishop (Piece):
-    
+    def get_moves (self,board,king = None):
+        temp_moves = []
+        moves = []
+        if (self.can_move(self.get_row()+2,self.get_col()+1,board)):
+            temp_moves.append((self.get_row()+2,self.get_col()+1))
+        if (self.can_move(self.get_row()-2,self.get_col()+1,board)):
+            temp_moves.append((self.get_row()-2,self.get_col()+1))
+        if (self.can_move(self.get_row()+2,self.get_col()-1,board)):
+            temp_moves.append((self.get_row()+2,self.get_col()-1))
+        if (self.can_move(self.get_row()-2,self.get_col()-1,board)):
+            temp_moves.append((self.get_row()-2,self.get_col()-1))
+        if (self.can_move(self.get_row()+1,self.get_col()+2,board)):
+            temp_moves.append((self.get_row()+1,self.get_col()+2))
+        if (self.can_move(self.get_row()+1,self.get_col()-2,board)):
+            temp_moves.append((self.get_row()+1,self.get_col()-2))
+        if (self.can_move(self.get_row()-1,self.get_col()+2,board)):
+            temp_moves.append((self.get_row()-1,self.get_col()+2))
+        if (self.can_move(self.get_row()-1,self.get_col()-2,board)):
+            temp_moves.append((self.get_row()-1,self.get_col()-2))
+        if king != None:
+            for move in temp_moves:
+                temp_board = copy.deepcopy(board)
+                temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+                if (not(king.is_in_check(temp_board))):
+                    moves.append(move)
+            return moves
+        return temp_moves
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)
         if (self.color == 'b'):
-            self.image = "img/blackb.png"
+            self.image = "img/blackn.png"
         else:
-            self.image = "img/whiteb.png"
+            self.image = "img/whiten.png"
+
+class Bishop (Piece):
 
     def type (self): 
         return 'bishop'
@@ -109,19 +154,39 @@ class Bishop (Piece):
     def short_type (self):
         return 'b'
 
-    def can_move(self,nrow,ncol,board):
-        if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and (abs(self.get_row() - nrow) == abs(self.get_col() - ncol))):
+    def can_move(self,nrow,ncol):
+        if (nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1 and abs(self.get_row() - nrow) == abs(self.get_col() - ncol)):
             return True
         return False
 
-class Rook (Piece):
-    
+    def get_moves (self,board,king = None):
+        temp_moves = []
+        moves = []
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        if king != None:
+            for move in temp_moves:
+                temp_board = copy.deepcopy(board)
+                temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+                if (not(king.is_in_check(temp_board))):
+                    moves.append(move)
+            return moves
+        return temp_moves
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)
         if (self.color == 'b'):
-            self.image = "img/blackr.png"
+            self.image = "img/blackb.png"
         else:
-            self.image = "img/whiter.png"
+            self.image = "img/whiteb.png"
+
+class Rook (Piece):
 
     def type (self): 
         return 'rook'
@@ -129,19 +194,39 @@ class Rook (Piece):
     def short_type (self):
         return 'r'
 
-    def can_move(self,nrow,ncol,board):
+    def can_move(self,nrow,ncol):
         if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and ((self.get_col() == ncol) or (self.get_row() == nrow))):
             return True
         return False
 
-class Queen (Piece):
-    
+    def get_moves (self,board,king = None):
+        temp_moves = []
+        moves = []
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        if king != None:
+            for move in temp_moves:
+                temp_board = copy.deepcopy(board)
+                temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+                if (not(king.is_in_check(temp_board))):
+                    moves.append(move)
+            return moves
+        return temp_moves
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)
         if (self.color == 'b'):
-            self.image = "img/blackq.png"
+            self.image = "img/blackr.png"
         else:
-            self.image = "img/whiteq.png"
+            self.image = "img/whiter.png"
+
+class Queen (Piece):
     
     def type (self): 
         return 'queen'
@@ -149,20 +234,48 @@ class Queen (Piece):
     def short_type (self):
         return 'q'
 
-    def can_move(self,nrow,ncol,board): 
+    def can_move(self,nrow,ncol): 
         if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and ((self.get_col() == ncol) or (self.get_row() == nrow) or (abs(self.get_row() - nrow) == abs(self.get_col() - ncol)))):
             return True
         return False
 
-class King (Piece):
-    
+    def get_moves (self,board,king = None):
+        temp_moves = []
+        moves = []
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row + i,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col + i,board):
+            temp_moves.append(x)
+        for x in self.get_moves_path(lambda row, i: row - i,lambda col, i: col - i,board):
+            temp_moves.append(x)
+        if king != None:
+            for move in temp_moves:
+                temp_board = copy.deepcopy(board)
+                temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+                if (not(king.is_in_check(temp_board))):
+                    moves.append(move)
+            return moves
+        return temp_moves
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)
         if (self.color == 'b'):
-            self.image = "img/blackk.png"
+            self.image = "img/blackq.png"
         else:
-            self.image = "img/whitek.png"
+            self.image = "img/whiteq.png"
 
+class King (Piece):
+    
     def type (self): 
         return 'king'
 
@@ -170,6 +283,48 @@ class King (Piece):
         return 'k'
 
     def can_move (self,nrow,ncol,board):
-        if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and ((abs(self.get_row() - nrow) <= 1) and (abs(self.get_col() - ncol) <= 1))): #TODO: AND NOT IN CHECK
+        if ((nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1) and (abs(self.get_row() - nrow) <= 1 and abs(self.get_col() - ncol) <= 1) and (board.get_piece(nrow,ncol) == None or board.get_piece(nrow,ncol).get_color() != self.get_color()) and not(self.is_in_check(board,nrow,ncol))):
             return True
         return False
+
+    def get_moves (self,board,king = None):
+        moves = []
+        if (self.can_move(self.get_row()-1,self.get_col(),board)):
+            moves.append((self.get_row()-1,self.get_col()))
+        if (self.can_move(self.get_row()+1,self.get_col(),board)):
+            moves.append((self.get_row()+1,self.get_col()))
+        if (self.can_move(self.get_row(),self.get_col()+1,board)):
+            moves.append((self.get_row(),self.get_col()+1))
+        if (self.can_move(self.get_row(),self.get_col()-1,board)):
+            moves.append((self.get_row(),self.get_col()-1))
+        if (self.can_move(self.get_row()+1,self.get_col()+1,board)):
+            moves.append((self.get_row()+1,self.get_col()+1))
+        if (self.can_move(self.get_row()+1,self.get_col()-1,board)):
+            moves.append((self.get_row()+1,self.get_col()-1))
+        if (self.can_move(self.get_row()-1,self.get_col()+1,board)):
+            moves.append((self.get_row()-1,self.get_col()+1))
+        if (self.can_move(self.get_row()-1,self.get_col()-1,board)):
+            moves.append((self.get_row()-1,self.get_col()-1))
+        return moves
+
+    def is_in_check (self,board,row=None,col=None):
+        if (row == None and col == None):
+            row = self.get_row()
+            col = self.get_col()
+            temp_board = board
+        else:
+            temp_board = copy.deepcopy(board)
+            temp_board.move(self.get_row(),self.get_col(),row,col)
+        for piece in temp_board.get_grid():
+            if (piece != None and piece.get_color() != self.get_color() and piece.short_type() != 'k'):
+                for move in piece.get_moves(temp_board):
+                    if (move[0] == row and move[1] == col):
+                        return True
+        return False
+
+    def __init__ (self,row,col,id,color):
+        super().__init__(row,col,id,0,color)
+        if (self.color == 'b'):
+            self.image = "img/blackk.png"
+        else:
+            self.image = "img/whitek.png"

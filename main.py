@@ -1,3 +1,3 @@
-from board import Board
+from board.board import Board
 
 board = Board()

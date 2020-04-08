@@ -1,4 +1,4 @@
-import utils
+from . import utils
 from pieces.pieces import *
 
 class Chess:
@@ -37,7 +37,20 @@ class Chess:
         self.chess_grid[61] = Bishop(8,6,29,'b')
         self.chess_grid[62] = Knight(8,7,30,'b')
         self.chess_grid[63] = Rook(8,8,31,'b')
-        self.turn = 'P'
+        self.kingw = self.get_piece(1,5)
+        self.kingb = self.get_piece(8,5)
+        self.turn = 'w'
+    
+    def get_black_king (self):
+        return self.kingb
+
+    def get_white_king (self):
+        return self.kingw
+
+    def get_king (self,color):
+        if (color == 'b'):
+            return self.get_black_king()
+        return self.get_white_king()
 
     def get_grid (self):
         return self.chess_grid
@@ -45,12 +58,21 @@ class Chess:
     def get_piece (self,row,col):
         return self.chess_grid[utils.get_index(row,col)]
 
-    def move (self,row,col,nrow,ncol):
-        if (self.get_grid()[utils.get_index(row,col)].can_move(nrow,ncol,self.get_grid())):
-            self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
-            self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
-            self.get_grid()[utils.get_index(row,col)] = None
+    def change_turn (self):
+        if (self.turn == 'b'):
+            self.turn = 'w'
+        else:
+            self.turn = 'b'
     
+    def get_turn (self):
+        return self.turn
+
+    def move (self,row,col,nrow,ncol):
+        self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
+        self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
+        self.get_grid()[utils.get_index(row,col)] = None
+        self.change_turn()
+
     def print_grid (self):
         for i in range(1,9):
             for j in range(1,9):
