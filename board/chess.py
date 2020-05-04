@@ -1,5 +1,6 @@
 from . import utils
 from pieces.pieces import *
+from ai import move
 
 class Chess:
 
@@ -57,6 +58,17 @@ class Chess:
 
     def get_piece (self,row,col):
         return self.chess_grid[utils.get_index(row,col)]
+    
+    def get_piece (self,cell):
+        return self.chess_grid[cell]
+
+    def get_possible_moves (self,color):
+        moves = []
+        for cell in self.chess_grid:
+            if (cell != None and cell.color == color):
+                for move in cell.get_moves():
+                    moves.append(cell.get_row(),cell.get_col(),move[0],move[1])
+        return moves
 
     def change_turn (self):
         if (self.turn == 'b'):
