@@ -66,8 +66,16 @@ class Chess:
         if (self.get_piece(move_to[0],move_to[1]) != None):
             if (self.get_piece(move_to[0],move_to[1]).get_color() == 'w'):
                 val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
+                if (self.kingw.is_in_check(self)):
+                    val += 12
+                #if (self.kingw.is_in_check_mate(self)):
+                #    val += 1000
             else:
-                val -= (self.get_piece(move_to[0],move_to[1]).get_val())
+                val -= self.get_piece(move_to[0],move_to[1]).get_val()
+                if (self.kingb.is_in_check(self)):
+                    val -= 6
+                #if (self.kingb.is_in_check_mate(self)):
+                #    val -= 1000
         return val
 
     def get_possible_moves (self,color):

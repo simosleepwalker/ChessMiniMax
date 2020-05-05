@@ -123,6 +123,6 @@ class Board (tk.Frame):
 
     def __init__ (self):
         self.chess = chess.Chess()
-        root = self.build_grid()
+        self.root = self.build_grid()
         self.draw_pieces()
-        root.mainloop()
+        self.root.mainloop()
