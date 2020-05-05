@@ -95,7 +95,7 @@ class Pawn (Piece):
         return temp_moves
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,1,color)
         if (self.color == 'b'):
             self.image = 'img/blackp.png'
         else:
@@ -143,7 +143,7 @@ class Knight (Piece):
         return temp_moves
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,3,color)
         if (self.color == 'b'):
             self.image = "img/blackn.png"
         else:
@@ -183,7 +183,7 @@ class Bishop (Piece):
         return temp_moves
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,3,color)
         if (self.color == 'b'):
             self.image = "img/blackb.png"
         else:
@@ -223,7 +223,7 @@ class Rook (Piece):
         return temp_moves
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,5,color)
         if (self.color == 'b'):
             self.image = "img/blackr.png"
         else:
@@ -271,7 +271,7 @@ class Queen (Piece):
         return temp_moves
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,9,color)
         if (self.color == 'b'):
             self.image = "img/blackq.png"
         else:

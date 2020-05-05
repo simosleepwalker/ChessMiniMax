@@ -1,13 +1,15 @@
-from ai.node import Node
 from ai.move import Move
 import copy
 import threading
+import random
 
 class Ai:
 
     def choose_move (self):
         threads = []
-        for move in get_moves(self.chess,'b'):
+        moves = get_moves(self.chess,'b')
+        random.shuffle(moves)
+        for move in moves:
             thread = MinimaxThread("Thread minimax",copy.deepcopy(self.chess),move,'w')
             thread.start()
             threads.append(thread)
@@ -18,11 +20,6 @@ class Ai:
             if (best_move == None or thread.result >= best_move.val):
                 best_move = thread.move
         return best_move
-        #best_move = None
-        #for move in self.get_moves(self.chess,'b'):
-        #    print(move.values)
-        #    if (best_move == None or self.minimax(2,copy.deepcopy(self.chess),move,'w') > best_move.val):
-        #        best_move = move
 
     def __init__ (self,chess):
         self.chess = chess
@@ -30,9 +27,7 @@ class Ai:
 class MinimaxThread (threading.Thread):
 
     def run (self):
-        print ("Starting " + self.name)
-        self.result = minimax(2,self.chess,self.move,self.color)
-        print ("Exiting " + self.name)
+        self.result = minimax(1,self.chess,self.move,self.color)
 
     def __init__ (self,name,chess,move,color):
       threading.Thread.__init__(self)

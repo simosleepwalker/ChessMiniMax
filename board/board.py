@@ -34,12 +34,16 @@ class Cell (tk.Frame):
         if (self.chess.get_turn() == self.get_piece().get_color()):
             moves = self.get_piece().get_moves(self.chess,self.chess.get_king(self.chess.get_turn()))
             self.board.highlit_moves(moves,self.get_piece())
-                
 
     def set_moves_callback (self, event):
         self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
         self.piece_from = None
         self.board.draw_pieces()
+        self.ai_turn()
+
+    def ai_turn (self):
+        self.chess.change_turn()
+        self.board.draw_pieces()        
 
     def __init__ (self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)

@@ -1,6 +1,7 @@
 from . import utils
 from pieces.pieces import *
 from ai.move import Move
+from ai.ai import Ai
 
 class Chess:
 
@@ -40,6 +41,7 @@ class Chess:
         self.chess_grid[63] = Rook(8,8,31,'b')
         self.kingw = self.get_piece(1,5)
         self.kingb = self.get_piece(8,5)
+        self.ai = Ai(self)
         self.turn = 'w'
     
     def get_black_king (self):
@@ -59,24 +61,21 @@ class Chess:
     def get_piece (self,row,col):
         return self.chess_grid[utils.get_index(row,col)]
 
-    def move_eval (self,move):
-        if (self.get_piece(move[0],move[1]) != None):
-            if (self.get_piece(move[0],move[1]).get_color() == 'w'):
-                return self.get_piece(move[0],move[1]).get_val()
+    def move_eval (self,move_from,move_to):
+        val = 0
+        if (self.get_piece(move_to[0],move_to[1]) != None):
+            if (self.get_piece(move_to[0],move_to[1]).get_color() == 'w'):
+                val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
             else:
-                return - (self.get_piece(move[0],move[1]).get_val())
-        return 0
+                val -= (self.get_piece(move_to[0],move_to[1]).get_val())
+        return val
 
     def get_possible_moves (self,color):
         moves = []
         for cell in self.chess_grid:
             if (cell != None and cell.color == color):
-                if (color == 'b'):
-                    for move in cell.get_moves(self,self.kingb):
-                        moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval(move)))
-                else:
-                    for move in cell.get_moves(self,self.kingw):
-                        moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval(move)))
+                for move in cell.get_moves(self,self.kingb):
+                    moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval((cell.get_row(),cell.get_col()),(move[0],move[1]))))
         return moves
 
     def change_turn (self):
@@ -84,6 +83,10 @@ class Chess:
             self.turn = 'w'
         else:
             self.turn = 'b'
+            move = self.ai.choose_move()
+            self.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
+            print("Black Moving " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
+            self.turn = 'w'
     
     def get_turn (self):
         return self.turn
@@ -92,7 +95,6 @@ class Chess:
         self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
         self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
         self.get_grid()[utils.get_index(row,col)] = None
-        self.change_turn()
 
     def print_grid (self):
         for i in range(1,9):
