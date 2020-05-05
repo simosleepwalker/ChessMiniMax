@@ -22,6 +22,9 @@ class Piece:
     def get_image_path (self):
         return self.image
 
+    def get_val (self):
+        return self.val
+
     def get_moves_path (self,row_func,col_func,board):
         moves = []
         for i in range(1,9):
