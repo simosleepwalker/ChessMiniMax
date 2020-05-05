@@ -68,14 +68,14 @@ class Chess:
                 val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
                 if (self.kingw.is_in_check(self)):
                     val += 12
-                #if (self.kingw.is_in_check_mate(self)):
-                #    val += 1000
+                if (self.kingw.is_in_check_mate(self)):
+                    val += 1000
             else:
                 val -= self.get_piece(move_to[0],move_to[1]).get_val()
                 if (self.kingb.is_in_check(self)):
-                    val -= 6
-                #if (self.kingb.is_in_check_mate(self)):
-                #    val -= 1000
+                    val -= 12
+                if (self.kingb.is_in_check_mate(self)):
+                    val -= 1000
         return val
 
     def get_possible_moves (self,color):
@@ -98,6 +98,13 @@ class Chess:
     
     def get_turn (self):
         return self.turn
+
+    def get_winner (self):
+        if self.kingb.is_in_check_mate(self):
+            return 'b'
+        elif self.kingb.is_in_check_mate(self):
+            return 'w'
+        return None
 
     def move (self,row,col,nrow,ncol):
         self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)

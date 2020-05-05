@@ -38,12 +38,21 @@ class Cell (tk.Frame):
     def set_moves_callback (self, event):
         self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
         self.piece_from = None
-        self.board.draw_pieces()
-        self.ai_turn()
+        if (self.check_winner() == None):
+            self.board.draw_pieces()
+            self.chess.change_turn()
+            if (self.check_winner() == None):  
+                self.board.draw_pieces()    
 
-    def ai_turn (self):
-        self.chess.change_turn()
-        self.board.draw_pieces()        
+    def check_winner (self):
+        if (self.chess.get_winner() != None):
+            if (self.chess.get_winner() == 'b'):
+                #VINTO NERO
+                return 'b'
+            else:
+                #VINTO BIANCO
+                return 'w'
+        return None
 
     def __init__ (self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)

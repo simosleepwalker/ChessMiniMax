@@ -326,17 +326,11 @@ class King (Piece):
         return False
 
     def is_in_check_mate (self,board,row=None,col=None):
-        if (row == None and col == None):
-            row = self.get_row()
-            col = self.get_col()
-            temp_board = board
-        else:
-            temp_board = copy.deepcopy(board)
-            temp_board.move(self.get_row(),self.get_col(),row,col)
-        for piece in temp_board.get_grid():
+        for piece in board.get_grid():
             if (piece != None and piece.get_color() == self.get_color()):
-                for move in piece.get_moves(temp_board):
-                    temp_board.move(move[0],move[1])
+                for move in piece.get_moves(board):
+                    temp_board = copy.deepcopy(board)
+                    temp_board.move(piece.get_row(),piece.get_col(),move[0],move[1])
                     if (not self.is_in_check(temp_board)):
                         return False
         return True
