@@ -39,20 +39,21 @@ class MinimaxThread (threading.Thread):
 def minimax (depth,chess,move,color):
         temp_chess = copy.deepcopy(chess)
         temp_chess.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
-        if (depth == 0): return move.val
-        else:
-            if (color == 'b'):
-                best_move = None
-                for move in get_moves(temp_chess,'b'):
-                    if (best_move == None or minimax(depth-1,temp_chess,move,'w') >= best_move.val):
-                        best_move = move
-                return best_move.val
+        if (move != None):
+            if (depth == 0): return move.val
             else:
-                best_move = None
-                for move in get_moves(temp_chess,'w'):
-                    if (best_move == None or minimax(depth-1,temp_chess,move,'b') < best_move.val):
-                        best_move = move
-                return best_move.val
+                if (color == 'b'):
+                    best_move = Move(-1,-1,-1,-1,-1001)
+                    for c_move in get_moves(temp_chess,'b'):
+                        if (best_move == move or minimax(depth-1,temp_chess,c_move,'w') >= best_move.val):
+                            best_move = c_move
+                    return best_move.val
+                else:
+                    best_move = Move(-1,-1,-1,-1,1001)
+                    for c_move in get_moves(temp_chess,'w'):
+                        if (best_move == move or minimax(depth-1,temp_chess,c_move,'b') < best_move.val):
+                            best_move = c_move
+                    return best_move.val
 
 def get_moves (chess,color):
     return chess.get_possible_moves(color)

@@ -42,15 +42,15 @@ class Cell (tk.Frame):
             self.board.draw_pieces()
             self.chess.change_turn()
             if (self.check_winner() == None):  
-                self.board.draw_pieces()    
+                self.board.draw_pieces() 
+        else:
+            self.board.draw_win()
 
     def check_winner (self):
         if (self.chess.get_winner() != None):
             if (self.chess.get_winner() == 'b'):
-                #VINTO NERO
                 return 'b'
             else:
-                #VINTO BIANCO
                 return 'w'
         return None
 
@@ -98,8 +98,14 @@ class Board (tk.Frame):
                 cell.set_board(self)
                 cell.set_chess(self.chess)
                 self.cells.append(cell)
-                
         return root
+
+    def draw_win (self):
+        for x,piece in enumerate(self.chess.get_grid()):
+            for child in self.cells[x].winfo_children():
+                child.destroy()
+            self.cells[x]['bg'] = COLOR3
+        print("win")
 
     def draw_pieces (self):
         for x,piece in enumerate(self.chess.get_grid()):

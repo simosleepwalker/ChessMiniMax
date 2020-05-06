@@ -4,8 +4,100 @@ from ai.move import Move
 from ai.ai import Ai
 
 class Chess:
+    
+    def get_black_king (self):
+        return self.kingb
+
+    def get_white_king (self):
+        return self.kingw
+
+    def get_king (self,color):
+        if (color == 'b'):
+            return self.get_black_king()
+        return self.get_white_king()
+
+    def get_grid (self):
+        return self.chess_grid
+
+    def get_piece (self,row,col):
+        return self.chess_grid[utils.get_index(row,col)]
+
+    def move_eval (self,move_from,move_to):
+        val = 0
+        temp_chess = copy.deepcopy(self)
+        temp_chess.move(move_from[0],move_from[1],move_to[0],move_to[1])
+        if (self.get_piece(move_to[0],move_to[1]) != None):
+            if (self.get_piece(move_to[0],move_to[1]).get_color() == 'w'):
+                val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
+                if (temp_chess.kingw.is_in_check(temp_chess)):
+                    val += 10
+                if (temp_chess.kingw.is_in_check_mate(temp_chess)):
+                    val += 1000
+            else:
+                val -= self.get_piece(move_to[0],move_to[1]).get_val()
+                if (temp_chess.kingb.is_in_check(temp_chess)):
+                    val -= 10
+                if (temp_chess.kingb.is_in_check_mate(temp_chess)):
+                    val -= 1000
+        return val
+
+    def get_possible_moves (self,color):
+        moves = []
+        for cell in self.chess_grid:
+            if (cell != None and cell.color == color):
+                for move in cell.get_moves(self,self.kingb):
+                    moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval((cell.get_row(),cell.get_col()),(move[0],move[1]))))
+        return moves
+
+    def change_turn (self):
+        if (self.turn == 'b'):
+            self.turn = 'w'
+        else:
+            self.turn = 'b'
+            move = self.ai.choose_move()
+            if (move != None):
+                self.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
+                print("Black Moving " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
+                self.turn = 'w'
+    
+    def get_turn (self):
+        return self.turn
+
+    def get_winner (self):
+        if self.kingb.is_in_check_mate(self):
+            return 'w'
+        elif self.kingb.is_in_check_mate(self):
+            return 'b'
+        return None
+
+    def move (self,row,col,nrow,ncol):
+        self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
+        self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
+        self.get_grid()[utils.get_index(row,col)] = None
+
+    def print_grid (self):
+        for i in range(1,9):
+            for j in range(1,9):
+                if (self.get_grid()[utils.get_index(i,j)] != None):
+                    print("| " + self.get_grid()[utils.get_index(i,j)].short_type() + " |", end="")
+                else:
+                    print("|   |", end="")
+            print("")
+        print("")
 
     def __init__ (self):
+        self.chess_grid = [ None ] * 64
+        self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
+        self.chess_grid[utils.get_index(4,8)] = Rook(4,8,2,'w')
+        self.chess_grid[utils.get_index(6,6)] = Queen(6,6,3,'w')
+        self.chess_grid[utils.get_index(7,5)] = Rook(7,5,4,'w')
+        self.chess_grid[utils.get_index(1,1)] = King(1,1,5,'w')
+        self.kingw = self.get_piece(1,1)
+        self.kingb = self.get_piece(8,8)
+        self.ai = Ai(self)
+        self.turn = 'w'
+
+    def prova (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
@@ -43,80 +135,3 @@ class Chess:
         self.kingb = self.get_piece(8,5)
         self.ai = Ai(self)
         self.turn = 'w'
-    
-    def get_black_king (self):
-        return self.kingb
-
-    def get_white_king (self):
-        return self.kingw
-
-    def get_king (self,color):
-        if (color == 'b'):
-            return self.get_black_king()
-        return self.get_white_king()
-
-    def get_grid (self):
-        return self.chess_grid
-
-    def get_piece (self,row,col):
-        return self.chess_grid[utils.get_index(row,col)]
-
-    def move_eval (self,move_from,move_to):
-        val = 0
-        if (self.get_piece(move_to[0],move_to[1]) != None):
-            if (self.get_piece(move_to[0],move_to[1]).get_color() == 'w'):
-                val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
-                if (self.kingw.is_in_check(self)):
-                    val += 12
-                if (self.kingw.is_in_check_mate(self)):
-                    val += 1000
-            else:
-                val -= self.get_piece(move_to[0],move_to[1]).get_val()
-                if (self.kingb.is_in_check(self)):
-                    val -= 12
-                if (self.kingb.is_in_check_mate(self)):
-                    val -= 1000
-        return val
-
-    def get_possible_moves (self,color):
-        moves = []
-        for cell in self.chess_grid:
-            if (cell != None and cell.color == color):
-                for move in cell.get_moves(self,self.kingb):
-                    moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval((cell.get_row(),cell.get_col()),(move[0],move[1]))))
-        return moves
-
-    def change_turn (self):
-        if (self.turn == 'b'):
-            self.turn = 'w'
-        else:
-            self.turn = 'b'
-            move = self.ai.choose_move()
-            self.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
-            print("Black Moving " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
-            self.turn = 'w'
-    
-    def get_turn (self):
-        return self.turn
-
-    def get_winner (self):
-        if self.kingb.is_in_check_mate(self):
-            return 'b'
-        elif self.kingb.is_in_check_mate(self):
-            return 'w'
-        return None
-
-    def move (self,row,col,nrow,ncol):
-        self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
-        self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
-        self.get_grid()[utils.get_index(row,col)] = None
-
-    def print_grid (self):
-        for i in range(1,9):
-            for j in range(1,9):
-                if (self.get_grid()[utils.get_index(i,j)] != None):
-                    print("| " + self.get_grid()[utils.get_index(i,j)].short_type() + " |", end="")
-                else:
-                    print("|   |", end="")
-            print("")
-        print("")
