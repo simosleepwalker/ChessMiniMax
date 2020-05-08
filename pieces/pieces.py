@@ -278,6 +278,12 @@ class Queen (Piece):
             self.image = "img/whiteq.png"
 
 class King (Piece):
+
+    def set_check_image (self):
+        if (self.color == 'b'):
+            self.image = "img/blackk_check.png"
+        else:
+            self.image = "img/whitek_check.png"
     
     def type (self): 
         return 'king'

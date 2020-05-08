@@ -47,11 +47,12 @@ class Cell (tk.Frame):
             self.board.draw_win()
 
     def check_winner (self):
-        if (self.chess.get_winner() != None):
-            if (self.chess.get_winner() == 'b'):
-                return 'b'
-            else:
-                return 'w'
+        if (self.chess.get_winner() == 'b'):
+            self.chess.get_king('w').set_check_image()
+            return 'b'
+        elif (self.chess.get_winner() == 'w'):
+            self.chess.get_king('b').set_check_image()
+            return 'w'
         return None
 
     def __init__ (self, *args, **kwargs):
@@ -104,8 +105,15 @@ class Board (tk.Frame):
         for x,piece in enumerate(self.chess.get_grid()):
             for child in self.cells[x].winfo_children():
                 child.destroy()
-            self.cells[x]['bg'] = COLOR3
-        print("win")
+            self.cells[x].set_chess(self.chess)
+            self.cells[x]['bg'] = self.cells[x].color
+            if piece != None:
+                self.cells[x].set_piece(piece)
+                image = Image.open(os.path.dirname(__file__)+"/../pieces/"+piece.get_image_path())
+                photo = ImageTk.PhotoImage(image.resize((64, 64), Image.ANTIALIAS))
+                label = tk.Label(self.cells[x], image=photo, bg=self.cells[x]['bg'], width=80, height=80)
+                label.image = photo
+                label.pack()
 
     def draw_pieces (self):
         for x,piece in enumerate(self.chess.get_grid()):
