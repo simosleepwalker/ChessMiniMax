@@ -56,7 +56,6 @@ class Chess:
         for thread in threads:
             for move in thread.moves:
                 moves.append(move)
-                print("move found: " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
         return moves
 
     def change_turn (self):
@@ -67,7 +66,6 @@ class Chess:
             move = self.ai.choose_move()
             if (move != None):
                 self.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
-                print("Black Moving " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
                 self.turn = 'w'
     
     def get_turn (self):
@@ -107,7 +105,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def __init__ (self):
+    def prova (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(5,8)] = King(5,8,1,'b')
         self.chess_grid[utils.get_index(4,1)] = Queen(4,1,2,'w')
@@ -120,7 +118,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova (self):
+    def __init__ (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
