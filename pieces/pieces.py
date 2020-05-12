@@ -298,25 +298,31 @@ class King (Piece):
 
     def get_moves (self,board,king = None):
         moves = []
+        temp_moves = []
         if (self.can_move(self.get_row()-1,self.get_col(),board)):
-            moves.append((self.get_row()-1,self.get_col()))
+            temp_moves.append((self.get_row()-1,self.get_col()))
         if (self.can_move(self.get_row()+1,self.get_col(),board)):
-            moves.append((self.get_row()+1,self.get_col()))
+            temp_moves.append((self.get_row()+1,self.get_col()))
         if (self.can_move(self.get_row(),self.get_col()+1,board)):
-            moves.append((self.get_row(),self.get_col()+1))
+            temp_moves.append((self.get_row(),self.get_col()+1))
         if (self.can_move(self.get_row(),self.get_col()-1,board)):
-            moves.append((self.get_row(),self.get_col()-1))
+            temp_moves.append((self.get_row(),self.get_col()-1))
         if (self.can_move(self.get_row()+1,self.get_col()+1,board)):
-            moves.append((self.get_row()+1,self.get_col()+1))
+            temp_moves.append((self.get_row()+1,self.get_col()+1))
         if (self.can_move(self.get_row()+1,self.get_col()-1,board)):
-            moves.append((self.get_row()+1,self.get_col()-1))
+            temp_moves.append((self.get_row()+1,self.get_col()-1))
         if (self.can_move(self.get_row()-1,self.get_col()+1,board)):
-            moves.append((self.get_row()-1,self.get_col()+1))
+            temp_moves.append((self.get_row()-1,self.get_col()+1))
         if (self.can_move(self.get_row()-1,self.get_col()-1,board)):
-            moves.append((self.get_row()-1,self.get_col()-1))
+            temp_moves.append((self.get_row()-1,self.get_col()-1))
+        for move in temp_moves:
+            temp_board = copy.deepcopy(board)
+            temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
+            if (not(self.is_in_check(temp_board,move[0],move[1]))):
+                moves.append(move)
         return moves
 
-    def is_in_check (self,board,row=None,col=None):
+    def old_is_in_check (self,board,row=None,col=None):
         if (row == None and col == None):
             row = self.get_row()
             col = self.get_col()
@@ -331,15 +337,38 @@ class King (Piece):
                         return True
         return False
 
-    def is_in_check_mate (self,board,row=None,col=None):
+    def is_in_check (self,board,row=None,col=None):
+        if (row == None and col == None):
+            row = self.get_row()
+            col = self.get_col()
         for piece in board.get_grid():
-            if (piece != None and piece.get_color() == self.get_color()):
+            if (piece != None and piece.get_color() != self.get_color() and piece.short_type() != 'k'):
                 for move in piece.get_moves(board):
-                    temp_board = copy.deepcopy(board)
-                    temp_board.move(piece.get_row(),piece.get_col(),move[0],move[1])
-                    if (not self.is_in_check(temp_board)):
-                        return False
-        return True
+                    if (move[0] == row and move[1] == col):
+                        return True
+        return False
+
+    def old_is_in_check_mate (self,board):
+        if (self.is_in_check(board)):
+            for piece in board.get_grid():
+                if (piece != None and piece.get_color() == self.get_color()):
+                    for move in piece.get_moves(board,self):
+                        temp_board = copy.deepcopy(board)
+                        temp_board.move(piece.get_row(),piece.get_col(),move[0],move[1])
+                        if (not(self.is_in_check(temp_board,move[0],move[1]))):
+                            return False
+            return True
+        return False
+
+    def is_in_check_mate (self,board):
+        if (self.is_in_check(board)):
+            for move in board.get_possible_moves(self.get_color()):
+                temp_board = copy.deepcopy(board)
+                temp_board.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
+                if (not(self.is_in_check(temp_board,move.move_to[0],move.move_to[1]))):
+                    return False
+            return True
+        return False
 
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,0,color)

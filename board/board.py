@@ -42,16 +42,20 @@ class Cell (tk.Frame):
             self.board.draw_pieces()
             self.chess.change_turn()
             if (self.check_winner() == None):  
-                self.board.draw_pieces() 
+                self.board.draw_pieces()
+            else:
+                self.board.draw_win()
         else:
             self.board.draw_win()
 
     def check_winner (self):
         if (self.chess.get_winner() == 'b'):
             self.chess.get_king('w').set_check_image()
+            print ("Black Win!")
             return 'b'
         elif (self.chess.get_winner() == 'w'):
             self.chess.get_king('b').set_check_image()
+            print ("White Win!")
             return 'w'
         return None
 

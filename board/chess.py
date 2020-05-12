@@ -2,6 +2,7 @@ from . import utils
 from pieces.pieces import *
 from ai.move import Move
 from ai.ai import Ai
+from threads import GetMovesThread
 
 class Chess:
     
@@ -26,27 +27,36 @@ class Chess:
         val = 0
         temp_chess = copy.deepcopy(self)
         temp_chess.move(move_from[0],move_from[1],move_to[0],move_to[1])
-        if (self.get_piece(move_to[0],move_to[1]) != None):
-            if (self.get_piece(move_to[0],move_to[1]).get_color() == 'w'):
+        if (self.get_turn() == 'b'):
+            if (self.get_piece(move_to[0],move_to[1]) != None):
                 val += self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
-                if (temp_chess.kingw.is_in_check(temp_chess)):
-                    val += 10
-                if (temp_chess.kingw.is_in_check_mate(temp_chess)):
-                    val += 1000
-            else:
-                val -= self.get_piece(move_to[0],move_to[1]).get_val()
-                if (temp_chess.kingb.is_in_check(temp_chess)):
-                    val -= 10
-                if (temp_chess.kingb.is_in_check_mate(temp_chess)):
-                    val -= 1000
+            if (temp_chess.kingw.is_in_check(temp_chess)):
+                val += 10
+            if (temp_chess.kingw.is_in_check_mate(temp_chess)):
+                val += 1000
+        else:
+            if (self.get_piece(move_to[0],move_to[1]) != None):
+                val -= self.get_piece(move_to[0],move_to[1]).get_val()*2 - self.get_piece(move_from[0],move_from[1]).get_val()
+            if (temp_chess.kingb.is_in_check(temp_chess)):
+                val -= 10
+            if (temp_chess.kingb.is_in_check_mate(temp_chess)):
+                val -= 1000
         return val
 
     def get_possible_moves (self,color):
         moves = []
+        threads = []
         for cell in self.chess_grid:
             if (cell != None and cell.color == color):
-                for move in cell.get_moves(self,self.kingb):
-                    moves.append(Move(cell.get_row(),cell.get_col(),move[0],move[1],self.move_eval((cell.get_row(),cell.get_col()),(move[0],move[1]))))
+                thread = GetMovesThread("Thread minimax",cell,self)
+                thread.start()
+                threads.append(thread)
+        for thread in threads:
+            thread.join()
+        for thread in threads:
+            for move in thread.moves:
+                moves.append(move)
+                print("move found: " + str(move.move_from[0]) + " " + str(move.move_from[1]) + " " + str(move.move_to[0]) + " " + str(move.move_to[1]))
         return moves
 
     def change_turn (self):
@@ -85,7 +95,7 @@ class Chess:
             print("")
         print("")
 
-    def __init__ (self):
+    def prova2 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
         self.chess_grid[utils.get_index(4,8)] = Rook(4,8,2,'w')
@@ -94,6 +104,19 @@ class Chess:
         self.chess_grid[utils.get_index(1,1)] = King(1,1,5,'w')
         self.kingw = self.get_piece(1,1)
         self.kingb = self.get_piece(8,8)
+        self.ai = Ai(self)
+        self.turn = 'w'
+
+    def __init__ (self):
+        self.chess_grid = [ None ] * 64
+        self.chess_grid[utils.get_index(5,8)] = King(5,8,1,'b')
+        self.chess_grid[utils.get_index(4,1)] = Queen(4,1,2,'w')
+        self.chess_grid[utils.get_index(4,6)] = Pawn(4,6,3,'w')
+        self.chess_grid[utils.get_index(4,7)] = Bishop(4,7,4,'w')
+        self.chess_grid[utils.get_index(6,8)] = Bishop(6,8,5,'b')
+        self.chess_grid[utils.get_index(1,1)] = King(1,1,5,'w')
+        self.kingw = self.get_piece(1,1)
+        self.kingb = self.get_piece(5,8)
         self.ai = Ai(self)
         self.turn = 'w'
 
