@@ -20,7 +20,7 @@ class MinimaxThread (threading.Thread):
     def run (self):
         self.result = self.minimax(1,self.chess,self.move,self.color)
     
-    def minimax (self,depth,chess,move,color):
+    def old_minimax (self,depth,chess,move,color):
         temp_chess = copy.deepcopy(chess)
         temp_chess.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
         if (move != None):
@@ -38,6 +38,20 @@ class MinimaxThread (threading.Thread):
                         if (best_move == move or self.minimax(depth-1,temp_chess,c_move,'b') < best_move.val):
                             best_move = c_move
                     return best_move.val
+
+    def minimax (self,depth,chess,move,color):
+        temp_chess = copy.deepcopy(chess)
+        temp_chess.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
+        if (depth == 0): return move.val
+        else:
+            if (color == 'b'):
+                moves = temp_chess.get_possible_moves('b')
+                moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['w']*len(moves))
+                return max(moves_values)
+            else:
+                moves = temp_chess.get_possible_moves('w')
+                moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['b']*len(moves))
+                return min(moves_values)
 
     def __init__ (self,name,chess,move,color):
       threading.Thread.__init__(self)

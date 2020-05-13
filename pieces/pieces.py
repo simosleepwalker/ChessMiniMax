@@ -371,7 +371,7 @@ class King (Piece):
         return False
 
     def __init__ (self,row,col,id,color):
-        super().__init__(row,col,id,0,color)
+        super().__init__(row,col,id,-50,color)
         if (self.color == 'b'):
             self.image = "img/blackk.png"
         else:

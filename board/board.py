@@ -141,12 +141,13 @@ class Board (tk.Frame):
                 for child in cell.winfo_children():
                     child.unbind("<Button-1>")
         for move in moves:
-            self.cells[utils.get_index(move[0],move[1])]['bg'] = COLOR3
-            for child in self.cells[utils.get_index(move[0],move[1])].winfo_children():
-                child['bg'] = COLOR3
-                child.bind("<Button-1>",self.cells[utils.get_index(move[0],move[1])].set_moves_callback)
-            self.cells[utils.get_index(move[0],move[1])].set_piece_from(piece)
-            self.cells[utils.get_index(move[0],move[1])].bind("<Button-1>",self.cells[utils.get_index(move[0],move[1])].set_moves_callback)
+            if (self.cells[utils.get_index(move[0],move[1])].get_piece() == None or self.cells[utils.get_index(move[0],move[1])].get_piece().short_type() != 'k'):
+                self.cells[utils.get_index(move[0],move[1])]['bg'] = COLOR3
+                for child in self.cells[utils.get_index(move[0],move[1])].winfo_children():
+                    child['bg'] = COLOR3
+                    child.bind("<Button-1>",self.cells[utils.get_index(move[0],move[1])].set_moves_callback)
+                self.cells[utils.get_index(move[0],move[1])].set_piece_from(piece)
+                self.cells[utils.get_index(move[0],move[1])].bind("<Button-1>",self.cells[utils.get_index(move[0],move[1])].set_moves_callback)
 
     def __init__ (self):
         self.chess = chess.Chess()
