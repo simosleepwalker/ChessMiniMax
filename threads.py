@@ -29,13 +29,13 @@ class MinimaxThread (threading.Thread):
                 if (color == 'b'):
                     best_move = Move(-1,-1,-1,-1,-1001)
                     for c_move in temp_chess.get_possible_moves('b'):
-                        if (best_move == move or self.minimax(depth-1,temp_chess,c_move,'w') >= best_move.val):
+                        if (best_move == move or self.old_minimax(depth-1,temp_chess,c_move,'w') >= best_move.val):
                             best_move = c_move
                     return best_move.val
                 else:
                     best_move = Move(-1,-1,-1,-1,1001)
                     for c_move in temp_chess.get_possible_moves('w'):
-                        if (best_move == move or self.minimax(depth-1,temp_chess,c_move,'b') < best_move.val):
+                        if (best_move == move or self.old_minimax(depth-1,temp_chess,c_move,'b') < best_move.val):
                             best_move = c_move
                     return best_move.val
 

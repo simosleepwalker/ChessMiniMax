@@ -94,6 +94,16 @@ class Pawn (Piece):
             return moves
         return temp_moves
 
+    def get_eating_moves (self,board,king = None):
+        moves = []
+        move_1 = (self.get_row()+1,self.get_col()+1)
+        move_2 = (self.get_row()+1,self.get_col()-1)
+        if (move_1[0] <= 8 or move_1[1] <= 8 or move_1[0] >= 0 or move_1[1] >= 0):
+            moves.append(move_1)
+        if (move_2[0] <= 8 or move_2[1] <= 8 or move_2[0] >= 0 or move_2[1] >= 0):
+            moves.append(move_2)
+        return moves
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,1,color)
         if (self.color == 'b'):
@@ -298,28 +308,22 @@ class King (Piece):
 
     def get_moves (self,board,king = None):
         moves = []
-        temp_moves = []
         if (self.can_move(self.get_row()-1,self.get_col(),board)):
-            temp_moves.append((self.get_row()-1,self.get_col()))
+            moves.append((self.get_row()-1,self.get_col()))
         if (self.can_move(self.get_row()+1,self.get_col(),board)):
-            temp_moves.append((self.get_row()+1,self.get_col()))
+            moves.append((self.get_row()+1,self.get_col()))
         if (self.can_move(self.get_row(),self.get_col()+1,board)):
-            temp_moves.append((self.get_row(),self.get_col()+1))
+            moves.append((self.get_row(),self.get_col()+1))
         if (self.can_move(self.get_row(),self.get_col()-1,board)):
-            temp_moves.append((self.get_row(),self.get_col()-1))
+            moves.append((self.get_row(),self.get_col()-1))
         if (self.can_move(self.get_row()+1,self.get_col()+1,board)):
-            temp_moves.append((self.get_row()+1,self.get_col()+1))
+            moves.append((self.get_row()+1,self.get_col()+1))
         if (self.can_move(self.get_row()+1,self.get_col()-1,board)):
-            temp_moves.append((self.get_row()+1,self.get_col()-1))
+            moves.append((self.get_row()+1,self.get_col()-1))
         if (self.can_move(self.get_row()-1,self.get_col()+1,board)):
-            temp_moves.append((self.get_row()-1,self.get_col()+1))
+            moves.append((self.get_row()-1,self.get_col()+1))
         if (self.can_move(self.get_row()-1,self.get_col()-1,board)):
-            temp_moves.append((self.get_row()-1,self.get_col()-1))
-        for move in temp_moves:
-            temp_board = copy.deepcopy(board)
-            temp_board.move(self.get_row(),self.get_col(),move[0],move[1])
-            if (not(self.is_in_check(temp_board,move[0],move[1]))):
-                moves.append(move)
+            moves.append((self.get_row()-1,self.get_col()-1))
         return moves
 
     def old_is_in_check (self,board,row=None,col=None):
@@ -341,11 +345,20 @@ class King (Piece):
         if (row == None and col == None):
             row = self.get_row()
             col = self.get_col()
-        for piece in board.get_grid():
+            temp_board = board
+        else:
+            temp_board = copy.deepcopy(board)
+            temp_board.move(self.get_row(),self.get_col(),row,col)
+        for piece in temp_board.get_grid():
             if (piece != None and piece.get_color() != self.get_color() and piece.short_type() != 'k'):
-                for move in piece.get_moves(board):
-                    if (move[0] == row and move[1] == col):
-                        return True
+                if (piece.short_type != 'p'):
+                    for move in piece.get_moves(temp_board):
+                        if (move[0] == row and move[1] == col):
+                            return True
+                else:
+                    for move in piece.get_eating_moves(temp_board):
+                        if (move[0] == row and move[1] == col):
+                            return True
         return False
 
     def old_is_in_check_mate (self,board):
@@ -362,11 +375,18 @@ class King (Piece):
 
     def is_in_check_mate (self,board):
         if (self.is_in_check(board)):
-            for move in board.get_possible_moves(self.get_color()):
-                temp_board = copy.deepcopy(board)
-                temp_board.move(move.move_from[0],move.move_from[1],move.move_to[0],move.move_to[1])
-                if (not(self.is_in_check(temp_board,move.move_to[0],move.move_to[1]))):
-                    return False
+            for piece in board.get_grid():
+                if (piece != None and piece.get_color() == self.get_color()):
+                    if (piece.short_type() == 'k'):
+                        for move in piece.get_moves(board):
+                            if (not(self.is_in_check(board,move[0],move[1]))):
+                                return False
+                    else:
+                        for move in piece.get_moves(board):
+                            temp_board = copy.deepcopy(board)
+                            temp_board.move(piece.get_row(),piece.get_col(),move[0],move[1])
+                            if (not(self.is_in_check(temp_board))):
+                                return False
             return True
         return False
 
