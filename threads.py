@@ -46,11 +46,15 @@ class MinimaxThread (threading.Thread):
         else:
             if (color == 'b'):
                 moves = temp_chess.get_possible_moves('b')
+                if (len(moves) == 0):
+                    return move.val
                 moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['w']*len(moves))
                 return max(moves_values)
             else:
                 moves = temp_chess.get_possible_moves('w')
-                moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['b']*len(moves))
+                if (len(moves) == 0):
+                    return move.val
+                moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['w']*len(moves))
                 return min(moves_values)
 
     def __init__ (self,name,chess,move,color):

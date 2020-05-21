@@ -72,10 +72,10 @@ class Chess:
         return self.turn
 
     def get_winner (self):
-        if self.kingb.is_in_check_mate(self):
-            return 'w'
-        elif self.kingb.is_in_check_mate(self):
+        if self.kingw.is_in_check_mate(self):
             return 'b'
+        elif self.kingw.is_in_check_mate(self):
+            return 'w'
         return None
 
     def move (self,row,col,nrow,ncol):
@@ -92,6 +92,20 @@ class Chess:
                     print("|   |", end="")
             print("")
         print("")
+
+    def __init__ (self):
+        self.chess_grid = [ None ] * 64
+        self.chess_grid[utils.get_index(1,1)] = King(1,1,1,'w')
+        self.chess_grid[utils.get_index(8,8)] = King(8,8,5,'b')
+        self.chess_grid[utils.get_index(8,2)] = Rook(8,2,2,'b')
+        self.chess_grid[utils.get_index(1,8)] = Rook(1,8,3,'b')
+        self.chess_grid[utils.get_index(2,1)] = Pawn(2,1,6,'w')
+        self.chess_grid[utils.get_index(1,3)] = Pawn(1,3,7,'b')
+        self.chess_grid[utils.get_index(6,7)] = Queen(6,7,4,'b')
+        self.kingw = self.get_piece(1,1)
+        self.kingb = self.get_piece(8,8)
+        self.ai = Ai(self)
+        self.turn = 'w'
 
     def prova3 (self):
         self.chess_grid = [ None ] * 64
@@ -127,7 +141,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def __init__ (self):
+    def prova4 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
