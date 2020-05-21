@@ -93,6 +93,15 @@ class Chess:
             print("")
         print("")
 
+    def prova3 (self):
+        self.chess_grid = [ None ] * 64
+        self.chess_grid[utils.get_index(7,5)] = King(7,5,1,'b')
+        self.chess_grid[utils.get_index(5,3)] = King(5,3,5,'w')
+        self.kingw = self.get_piece(7,5)
+        self.kingb = self.get_piece(5,3)
+        self.ai = Ai(self)
+        self.turn = 'w'
+
     def prova2 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
