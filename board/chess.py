@@ -83,22 +83,12 @@ class Chess:
         self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
         self.get_grid()[utils.get_index(row,col)] = None
 
-    def print_grid (self):
-        for i in range(1,9):
-            for j in range(1,9):
-                if (self.get_grid()[utils.get_index(i,j)] != None):
-                    print("| " + self.get_grid()[utils.get_index(i,j)].short_type() + " |", end="")
-                else:
-                    print("|   |", end="")
-            print("")
-        print("")
-
-    def __init__ (self):
+    def prova4 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(1,1)] = King(1,1,1,'w')
         self.chess_grid[utils.get_index(8,8)] = King(8,8,5,'b')
         self.chess_grid[utils.get_index(8,2)] = Rook(8,2,2,'b')
-        self.chess_grid[utils.get_index(1,8)] = Rook(1,8,3,'b')
+        self.chess_grid[utils.get_index(2,8)] = Rook(2,8,3,'b')
         self.chess_grid[utils.get_index(2,1)] = Pawn(2,1,6,'w')
         self.chess_grid[utils.get_index(1,3)] = Pawn(1,3,7,'b')
         self.chess_grid[utils.get_index(6,7)] = Queen(6,7,4,'b')
@@ -141,7 +131,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova4 (self):
+    def __init__ (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
