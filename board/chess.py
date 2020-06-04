@@ -106,7 +106,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def __init__ (self):
+    def prova1 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
         self.chess_grid[utils.get_index(4,8)] = Rook(4,8,2,'w')
@@ -131,7 +131,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova4 (self):
+    def __init__ (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
