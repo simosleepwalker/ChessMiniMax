@@ -74,7 +74,7 @@ class Chess:
     def get_winner (self):
         if self.kingw.is_in_check_mate(self):
             return 'b'
-        elif self.kingw.is_in_check_mate(self):
+        elif self.kingb.is_in_check_mate(self):
             return 'w'
         return None
 
@@ -83,7 +83,7 @@ class Chess:
         self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
         self.get_grid()[utils.get_index(row,col)] = None
 
-    def prova4 (self):
+    def prova (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(1,1)] = King(1,1,1,'w')
         self.chess_grid[utils.get_index(8,8)] = King(8,8,5,'b')
@@ -106,7 +106,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova2 (self):
+    def __init__ (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
         self.chess_grid[utils.get_index(4,8)] = Rook(4,8,2,'w')
@@ -118,7 +118,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova (self):
+    def prova2 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(5,8)] = King(5,8,1,'b')
         self.chess_grid[utils.get_index(4,1)] = Queen(4,1,2,'w')
@@ -131,7 +131,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def __init__ (self):
+    def prova4 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[0] = Rook(1,1,0,'w')
         self.chess_grid[1] = Knight(1,2,1,'w')
