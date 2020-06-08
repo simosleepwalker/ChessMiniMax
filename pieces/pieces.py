@@ -1,5 +1,6 @@
 import copy
 
+#pieces classes
 class Piece:
         
     def move (self,nrow,ncol):
@@ -25,6 +26,7 @@ class Piece:
     def get_val (self):
         return self.val
 
+    #method to get moves for pieces which moves on a path
     def get_moves_path (self,row_func,col_func,board):
         moves = []
         for i in range(1,9):
@@ -85,6 +87,7 @@ class Pawn (Piece):
                 temp_moves.append((self.get_row()-1,self.get_col()+1))
             if (self.can_move(self.get_row()-1,self.get_col()-1,board)):
                 temp_moves.append((self.get_row()-1,self.get_col()-1))
+        #if king is passed as argument, always check that the move doesn't put the king in check
         if king != None:
             for move in temp_moves:
                 temp_board = copy.deepcopy(board)
@@ -95,6 +98,7 @@ class Pawn (Piece):
         return temp_moves
 
     def get_eating_moves (self,board,king = None):
+        #with pawn the eating moves are different than normal moves
         if (self.get_color == 'w'): 
             moves = []
             move_1 = (self.get_row()+1,self.get_col()+1)

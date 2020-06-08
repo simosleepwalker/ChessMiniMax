@@ -18,7 +18,7 @@ class GetMovesThread (threading.Thread):
 class MinimaxThread (threading.Thread):
 
     def run (self):
-        self.result = self.minimax(1,self.chess,self.move,self.color)
+        self.result = self.minimax(self.depth,self.chess,self.move,self.color)
 
     def minimax (self,depth,chess,move,color):
         temp_chess = copy.deepcopy(chess)
@@ -38,9 +38,10 @@ class MinimaxThread (threading.Thread):
                 moves_values = map(self.minimax,[depth-1]*len(moves),[temp_chess]*len(moves),moves,['w']*len(moves))
                 return min(moves_values)
 
-    def __init__ (self,name,chess,move,color):
+    def __init__ (self,name,chess,move,color,depth):
       threading.Thread.__init__(self)
       self.name = name
       self.chess = chess
       self.move = move
       self.color = color
+      self.depth = depth

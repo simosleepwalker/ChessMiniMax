@@ -30,11 +30,13 @@ class Cell (tk.Frame):
     def get_piece (self):
         return self.piece
 
+    #callback to get a piece's move and highlight them
     def get_moves_callback (self, event):
         if (self.chess.get_turn() == self.get_piece().get_color()):
             moves = self.get_piece().get_moves(self.chess,self.chess.get_king(self.chess.get_turn()))
             self.board.highlit_moves(moves,self.get_piece())
 
+    #callback to decide a move
     def set_moves_callback (self, event):
         try:
             self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
@@ -52,6 +54,7 @@ class Cell (tk.Frame):
         else:
             self.board.draw_win()
 
+    #verify if the game ended
     def check_winner (self):
         if (self.chess.get_winner() == 'b'):
             self.chess.get_king('w').set_check_image()
@@ -109,6 +112,7 @@ class Board (tk.Frame):
                 self.cells.append(cell)
         return root
 
+    #function that ends the game
     def draw_win (self):
         for x,piece in enumerate(self.chess.get_grid()):
             for child in self.cells[x].winfo_children():
@@ -123,6 +127,7 @@ class Board (tk.Frame):
                 label.image = photo
                 label.pack()
 
+    #draw pieces on the board and attribute functions to them
     def draw_pieces (self):
         for x,piece in enumerate(self.chess.get_grid()):
             for child in self.cells[x].winfo_children():
@@ -138,6 +143,7 @@ class Board (tk.Frame):
                 label.bind("<Button-1>",self.cells[x].get_moves_callback)
                 label.pack()
     
+    #highlight possible moves for the clicked piece
     def highlit_moves (self,moves,piece):
         if len(moves) > 0:
             for cell in self.cells:

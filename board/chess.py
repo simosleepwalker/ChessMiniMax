@@ -1,6 +1,5 @@
 from . import utils
 from pieces.pieces import *
-from ai.move import Move
 from ai.ai import Ai
 from threads import GetMovesThread
 
@@ -23,6 +22,7 @@ class Chess:
     def get_piece (self,row,col):
         return self.chess_grid[utils.get_index(row,col)]
 
+    #move evaluation
     def move_eval (self,move_from,move_to):
         val = 0
         temp_chess = copy.deepcopy(self)
@@ -43,6 +43,7 @@ class Chess:
                 val -= 1000
         return val
 
+    #get all the possible moves for a player 
     def get_possible_moves (self,color):
         moves = []
         threads = []
@@ -78,12 +79,13 @@ class Chess:
             return 'w'
         return None
 
+    #move a piece
     def move (self,row,col,nrow,ncol):
         self.get_grid()[utils.get_index(row,col)].move(nrow,ncol)
         self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
         self.get_grid()[utils.get_index(row,col)] = None
 
-    #Se muovo il pedone bianco la CPU ha diversi modi per mandare il re bianco in scacco matto
+    #If i move white pawn CPU has different moves to set white king in checkmate
     def prova1 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(1,1)] = King(1,1,1,'w')
@@ -98,7 +100,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    #Solo i due re, verifico che non possano avvicinarsi tra loro perchè andrebbero in scacco
+    #Only the two kings, verify that they can't get near to each other (they would be in check)
     def prova2 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(7,5)] = King(7,5,1,'b')
@@ -108,7 +110,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    #Muovendo la torre si manda in scacco matto il re nero, verifico che la partita si fermi
+    #Moving the tower i put black king in check mate
     def prova3 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
@@ -121,7 +123,7 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    #Re in scacco può mangiare l'alfiere, a meno che non venga spostato avanti il pedone perchè altrimenti verrebbe mangiato dalla regina
+    #Black king is in check, it can eat the bishop, unless white pawn is moved, because king would then be in check even eating the bishop
     def prova4 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(5,8)] = King(5,8,1,'b')
