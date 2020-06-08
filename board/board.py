@@ -36,7 +36,11 @@ class Cell (tk.Frame):
             self.board.highlit_moves(moves,self.get_piece())
 
     def set_moves_callback (self, event):
-        self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
+        try:
+            self.chess.move(self.piece_from.get_row(),self.piece_from.get_col(),self.row,self.col)
+        except:
+            print("Invalid Move!")
+            return
         self.piece_from = None
         if (self.check_winner() == None):
             self.board.draw_pieces()

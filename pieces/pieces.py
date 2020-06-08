@@ -58,9 +58,9 @@ class Pawn (Piece):
     def can_move (self,nrow,ncol,board):
         if (nrow <= 8 and ncol <= 8 and nrow >= 1 and ncol >= 1):
             if ((self.get_color() == 'w' and
-                ((self.get_row() == 2 and nrow - self.get_row() == 2 and nrow - self.get_row() > 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None and board.get_piece(nrow-1,ncol-1) == None) or (self.get_row() == 2 and nrow - self.get_row() == 1 and nrow - self.get_row() > 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (self.get_row() != 2 and nrow - self.get_row() == 1 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (nrow - self.get_row() == 1 and abs(ncol - self.get_col()) == 1 and board.get_piece(nrow,ncol) != None and board.get_piece(nrow,ncol).get_color() != 'w' ) ) ) 
+                ((self.get_row() == 2 and nrow - self.get_row() == 2 and nrow - self.get_row() > 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None and board.get_piece(nrow-1,ncol) == None) or (self.get_row() == 2 and nrow - self.get_row() == 1 and nrow - self.get_row() > 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (self.get_row() != 2 and nrow - self.get_row() == 1 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (nrow - self.get_row() == 1 and abs(ncol - self.get_col()) == 1 and board.get_piece(nrow,ncol) != None and board.get_piece(nrow,ncol).get_color() != 'w' ) ) ) 
                 or (self.get_color() == 'b' and 
-                ((self.get_row() == 7 and nrow - self.get_row() == -2 and nrow - self.get_row() < 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None and board.get_piece(nrow+1,ncol+1) == None) or (self.get_row() == 7 and nrow - self.get_row() == -1 and nrow - self.get_row() < 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (self.get_row() != 7 and nrow - self.get_row() == -1 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (nrow - self.get_row() == -1 and abs(ncol - self.get_col()) == 1 and board.get_piece(nrow,ncol) != None and board.get_piece(nrow,ncol).get_color() != 'b' ) ) ) ):
+                ((self.get_row() == 7 and nrow - self.get_row() == -2 and nrow - self.get_row() < 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None and board.get_piece(nrow+1,ncol) == None) or (self.get_row() == 7 and nrow - self.get_row() == -1 and nrow - self.get_row() < 0 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (self.get_row() != 7 and nrow - self.get_row() == -1 and ncol == self.get_col() and board.get_piece(nrow,ncol) == None) or (nrow - self.get_row() == -1 and abs(ncol - self.get_col()) == 1 and board.get_piece(nrow,ncol) != None and board.get_piece(nrow,ncol).get_color() != 'b' ) ) ) ):
                 return True
         return False
 
@@ -95,13 +95,22 @@ class Pawn (Piece):
         return temp_moves
 
     def get_eating_moves (self,board,king = None):
-        moves = []
-        move_1 = (self.get_row()+1,self.get_col()+1)
-        move_2 = (self.get_row()+1,self.get_col()-1)
-        if (move_1[0] <= 8 or move_1[1] <= 8 or move_1[0] >= 0 or move_1[1] >= 0):
-            moves.append(move_1)
-        if (move_2[0] <= 8 or move_2[1] <= 8 or move_2[0] >= 0 or move_2[1] >= 0):
-            moves.append(move_2)
+        if (self.get_color == 'w'): 
+            moves = []
+            move_1 = (self.get_row()+1,self.get_col()+1)
+            move_2 = (self.get_row()+1,self.get_col()-1)
+            if (move_1[0] <= 8 and move_1[1] <= 8 and move_1[0] >= 0 and move_1[1] >= 0):
+                moves.append(move_1)
+            if (move_2[0] <= 8 and move_2[1] <= 8 and move_2[0] >= 0 and move_2[1] >= 0):
+                moves.append(move_2)
+        else:
+            moves = []
+            move_1 = (self.get_row()-1,self.get_col()-1)
+            move_2 = (self.get_row()-1,self.get_col()+1)
+            if (move_1[0] <= 8 and move_1[1] <= 8 and move_1[0] >= 0 and move_1[1] >= 0):
+                moves.append(move_1)
+            if (move_2[0] <= 8 and move_2[1] <= 8 and move_2[0] >= 0 and move_2[1] >= 0):
+                moves.append(move_2)
         return moves
 
     def __init__ (self,row,col,id,color):
@@ -151,6 +160,9 @@ class Knight (Piece):
                     moves.append(move)
             return moves
         return temp_moves
+    
+    def get_eating_moves (self,board,king = None):
+        return self.get_moves (board,king)
 
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,3,color)
@@ -192,6 +204,9 @@ class Bishop (Piece):
             return moves
         return temp_moves
 
+    def get_eating_moves (self,board,king = None):
+        return self.get_moves (board,king)
+
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,3,color)
         if (self.color == 'b'):
@@ -231,6 +246,9 @@ class Rook (Piece):
                     moves.append(move)
             return moves
         return temp_moves
+    
+    def get_eating_moves (self,board,king = None):
+        return self.get_moves (board,king)
 
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,5,color)
@@ -279,6 +297,9 @@ class Queen (Piece):
                     moves.append(move)
             return moves
         return temp_moves
+    
+    def get_eating_moves (self,board,king = None):
+        return self.get_moves (board,king)
 
     def __init__ (self,row,col,id,color):
         super().__init__(row,col,id,9,color)
@@ -340,12 +361,8 @@ class King (Piece):
                     for move in piece.get_moves(temp_board,verify_check=False):
                         if (move[0] == row and move[1] == col):
                             return True
-                elif (piece.short_type() == 'p'):
-                    for move in piece.get_eating_moves(temp_board):
-                        if (move[0] == row and move[1] == col):
-                            return True
                 else:
-                    for move in piece.get_moves(temp_board):
+                    for move in piece.get_eating_moves(temp_board):
                         if (move[0] == row and move[1] == col):
                             return True
         return False

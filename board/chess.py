@@ -83,7 +83,8 @@ class Chess:
         self.get_grid()[utils.get_index(nrow,ncol)] = self.get_grid()[utils.get_index(row,col)]
         self.get_grid()[utils.get_index(row,col)] = None
 
-    def prova (self):
+    #Se muovo il pedone bianco la CPU ha diversi modi per mandare il re bianco in scacco matto
+    def prova1 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(1,1)] = King(1,1,1,'w')
         self.chess_grid[utils.get_index(8,8)] = King(8,8,5,'b')
@@ -97,7 +98,8 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova3 (self):
+    #Solo i due re, verifico che non possano avvicinarsi tra loro perchè andrebbero in scacco
+    def prova2 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(7,5)] = King(7,5,1,'b')
         self.chess_grid[utils.get_index(5,3)] = King(5,3,5,'w')
@@ -106,7 +108,8 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova1 (self):
+    #Muovendo la torre si manda in scacco matto il re nero, verifico che la partita si fermi
+    def prova3 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(8,8)] = King(8,8,1,'b')
         self.chess_grid[utils.get_index(4,8)] = Rook(4,8,2,'w')
@@ -118,7 +121,8 @@ class Chess:
         self.ai = Ai(self)
         self.turn = 'w'
 
-    def prova2 (self):
+    #Re in scacco può mangiare l'alfiere, a meno che non venga spostato avanti il pedone perchè altrimenti verrebbe mangiato dalla regina
+    def prova4 (self):
         self.chess_grid = [ None ] * 64
         self.chess_grid[utils.get_index(5,8)] = King(5,8,1,'b')
         self.chess_grid[utils.get_index(4,1)] = Queen(4,1,2,'w')
